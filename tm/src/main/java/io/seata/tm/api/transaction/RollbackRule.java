@@ -20,6 +20,8 @@ import io.seata.common.util.StringUtils;
 import java.io.Serializable;
 
 /**
+ * 事务回滚的规则，用于哪些异常回滚，它的子类{@link NoRollbackRule}用于指定那些异常忽略
+ *
  * @author guoyao
  * @date 2019/4/17
  */

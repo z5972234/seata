@@ -91,8 +91,10 @@ public class DefaultGlobalTransaction implements GlobalTransaction {
         if (RootContext.getXID() != null) {
             throw new IllegalStateException();
         }
+        // 从TC哪里拿到xid，xid是每个全局事务的唯一id，标记着全局事务成功开启
         xid = transactionManager.begin(null, null, name, timeout);
         status = GlobalStatus.Begin;
+        // 将xid绑定到线程中
         RootContext.bind(xid);
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Begin new global transaction [" + xid + "]");
@@ -112,7 +114,7 @@ public class DefaultGlobalTransaction implements GlobalTransaction {
         if (xid == null) {
             throw new IllegalStateException();
         }
-
+        // 发送commit请求到TC
         status = transactionManager.commit(xid);
         if (RootContext.getXID() != null) {
             if (xid.equals(RootContext.getXID())) {
@@ -137,7 +139,7 @@ public class DefaultGlobalTransaction implements GlobalTransaction {
         if (xid == null) {
             throw new IllegalStateException();
         }
-
+        // 发送回滚请求到TC
         status = transactionManager.rollback(xid);
         if (RootContext.getXID() != null) {
             if (xid.equals(RootContext.getXID())) {

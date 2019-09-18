@@ -93,6 +93,7 @@ public class DefaultFailureHandlerImpl implements FailureHandler {
                     return;
                 }
                 isStopped = shouldStop(tx, required);
+                // 继续重试
                 timer.newTimeout(this, SCHEDULE_INTERVAL_SECONDS, TimeUnit.SECONDS);
             }
         }
@@ -100,9 +101,11 @@ public class DefaultFailureHandlerImpl implements FailureHandler {
 
     private boolean shouldStop(final GlobalTransaction tx, GlobalStatus required) {
         try {
+            // getStatus 向TC拿到最新状态
             GlobalStatus status = tx.getStatus();
             LOGGER.info("transaction[" + tx.getXid() + "] current status is [" + status + "]");
             if (status == required || status == GlobalStatus.Finished) {
+                // 如果状态匹配或事务已经完成则退出重试
                 return true;
             }
         } catch (TransactionException e) {

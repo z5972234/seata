@@ -54,23 +54,23 @@ public class TransactionalTemplate {
         }
         try {
 
-            // 2. begin transaction
+            // 2. 开启全局事务
             beginTransaction(txInfo, tx);
 
             Object rs = null;
             try {
 
-                // Do Your Business
+                // 执行我们自己的业务
                 rs = business.execute();
 
             } catch (Throwable ex) {
 
-                // 3.the needed business exception to rollback.
+                // 3. 出现异常，进入回滚全局事务
                 completeTransactionAfterThrowing(txInfo,tx,ex);
                 throw ex;
             }
 
-            // 4. everything is fine, commit.
+            // 4. 提交全局事务
             commitTransaction(tx);
 
             return rs;
@@ -82,12 +82,12 @@ public class TransactionalTemplate {
     }
 
     private void completeTransactionAfterThrowing(TransactionInfo txInfo, GlobalTransaction tx, Throwable ex) throws TransactionalExecutor.ExecutionException {
-        //roll back
+        // 如果满足我们的回滚规则 则进行回滚操作，否则直接提交
         if (txInfo != null && txInfo.rollbackOn(ex)) {
             try {
                 rollbackTransaction(tx, ex);
             } catch (TransactionException txe) {
-                // Failed to rollback
+                // 回滚失败， 抛出回滚失败异常
                 throw new TransactionalExecutor.ExecutionException(tx, txe,
                         TransactionalExecutor.Code.RollbackFailure, ex);
             }

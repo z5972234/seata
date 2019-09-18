@@ -64,6 +64,9 @@ public class GlobalTransactionalInterceptor implements MethodInterceptor {
 
     }
 
+    /**
+     * 代理方法，开启事务的入口
+     */
     @Override
     public Object invoke(final MethodInvocation methodInvocation) throws Throwable {
         Class<?> targetClass = (methodInvocation.getThis() != null ? AopUtils.getTargetClass(methodInvocation.getThis()) : null);
@@ -112,11 +115,15 @@ public class GlobalTransactionalInterceptor implements MethodInterceptor {
                     return formatMethod(methodInvocation.getMethod());
                 }
 
+                // 封装事务信息，就是把注解中的参数进行包装
                 @Override
                 public TransactionInfo getTransactionInfo() {
                     TransactionInfo transactionInfo = new TransactionInfo();
+                    // 事务超时时间
                     transactionInfo.setTimeOut(globalTrxAnno.timeoutMills());
+                    // 事务名称
                     transactionInfo.setName(name());
+                    // 回滚规则
                     Set<RollbackRule> rollbackRules = new LinkedHashSet<>();
                     for (Class<?> rbRule : globalTrxAnno.rollbackFor()) {
                         rollbackRules.add(new RollbackRule(rbRule));
@@ -138,14 +145,17 @@ public class GlobalTransactionalInterceptor implements MethodInterceptor {
             TransactionalExecutor.Code code = e.getCode();
             switch (code) {
                 case RollbackDone:
+                    // 回滚操作成功完成
                     throw e.getOriginalException();
                 case BeginFailure:
                     failureHandler.onBeginFailure(e.getTransaction(), e.getCause());
                     throw e.getCause();
                 case CommitFailure:
+                    // 提交失败，定时任务进行重试，每10s检查一次是否成功，持续1个小时
                     failureHandler.onCommitFailure(e.getTransaction(), e.getCause());
                     throw e.getCause();
                 case RollbackFailure:
+                    // 回滚失败，进行重试
                     failureHandler.onRollbackFailure(e.getTransaction(), e.getCause());
                     throw e.getCause();
                 default:

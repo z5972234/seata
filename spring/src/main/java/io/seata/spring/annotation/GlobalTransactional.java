@@ -32,39 +32,39 @@ import java.lang.annotation.Target;
 public @interface GlobalTransactional {
 
     /**
-     * Global transaction timeoutMills in MILLISECONDS.
+     * 全局事务超时时间，默认60000毫秒
      *
      * @return timeoutMills in MILLISECONDS.
      */
     int timeoutMills() default TransactionInfo.DEFAULT_TIME_OUT;
 
     /**
-     * Given name of the global transaction instance.
+     * 全局事务名称
      *
      * @return Given name.
      */
     String name() default "";
 
     /**
-     * roll back for the Class
+     * 回滚的异常
      * @return
      */
     Class<? extends Throwable>[] rollbackFor() default {};
 
     /**
-     *  roll back for the class name
+     *  回滚的异常
      * @return
      */
     String[] rollbackForClassName() default {};
 
     /**
-     * not roll back for the Class
+     * 不回滚的异常
      * @return
      */
     Class<? extends Throwable>[] noRollbackFor() default {};
 
     /**
-     * not roll back for the class name
+     * 不回滚的异常
      * @return
      */
     String[] noRollbackForClassName() default {};
