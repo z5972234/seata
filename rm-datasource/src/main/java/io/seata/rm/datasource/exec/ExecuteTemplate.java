@@ -24,7 +24,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * The type Execute template.
+ * sql的执行入库在这里
  *
  * @author sharajava
  */
@@ -65,10 +65,11 @@ public class ExecuteTemplate {
                                                      Object... args) throws SQLException {
 
         if (!RootContext.inGlobalTransaction() && !RootContext.requireGlobalLock()) {
-            // Just work as original statement
+            // 如何不全局事务中，则直接原数据库连接
             return statementCallback.execute(statementProxy.getTargetStatement(), args);
         }
 
+        // 这个sqlRecognizer主要是用来判断当钱数据库类型和sql类型（select、update、insert、delete）
         if (sqlRecognizer == null) {
             sqlRecognizer = SQLVisitorFactory.get(
                     statementProxy.getTargetSQL(),

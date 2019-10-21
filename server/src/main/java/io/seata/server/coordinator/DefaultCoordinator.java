@@ -249,6 +249,7 @@ public class DefaultCoordinator extends AbstractTCInboundHandler
             }
             BranchSession branchSession = globalSession.getBranch(branchId);
 
+            // 发送分支事务回滚请求到对应的rm
             BranchRollbackResponse response = (BranchRollbackResponse)messageSender.sendSyncRequest(resourceId,
                 branchSession.getClientId(), request);
             return response.getBranchStatus();

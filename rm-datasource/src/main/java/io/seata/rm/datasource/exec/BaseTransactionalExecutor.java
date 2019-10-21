@@ -211,9 +211,11 @@ public abstract class BaseTransactionalExecutor<T, S extends Statement> implemen
         ConnectionProxy connectionProxy = statementProxy.getConnectionProxy();
 
         TableRecords lockKeyRecords = sqlRecognizer.getSQLType() == SQLType.DELETE ? beforeImage : afterImage;
+        // 用变动数据的主键值作为锁
         String lockKeys = buildLockKey(lockKeyRecords);
         connectionProxy.appendLockKey(lockKeys);
 
+        // 构造undo log，并保存到当前连接中
         SQLUndoLog sqlUndoLog = buildUndoItem(beforeImage, afterImage);
         connectionProxy.appendUndoLog(sqlUndoLog);
     }

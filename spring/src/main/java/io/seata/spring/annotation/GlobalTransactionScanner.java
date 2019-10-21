@@ -49,6 +49,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 /**
  * The type Global transaction scanner.
  *
+ * 这个类是与spring集成的关键
+ *
  * @author jimin.jm @alibaba-inc.com
  * @date 2018 /12/28
  */
@@ -158,6 +160,7 @@ public class GlobalTransactionScanner extends AbstractAutoProxyCreator
         ShutdownHook.getInstance().destroyAll();
     }
 
+    // 初始化TM和RM，与TC建立连接
     private void initClient() {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Initializing Global Transaction Clients ... ");

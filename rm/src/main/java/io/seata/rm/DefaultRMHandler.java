@@ -53,11 +53,17 @@ public class DefaultRMHandler extends AbstractRMHandler {
         }
     }
 
+    /**
+     * PhaseTwo提交
+     */
     @Override
     public BranchCommitResponse handle(BranchCommitRequest request) {
         return getRMHandler(request.getBranchType()).handle(request);
     }
 
+    /**
+     * PhaseTwo回滚
+     */
     @Override
     public BranchRollbackResponse handle(BranchRollbackRequest request) {
         return getRMHandler(request.getBranchType()).handle(request);

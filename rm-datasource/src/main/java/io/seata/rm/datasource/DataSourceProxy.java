@@ -84,6 +84,7 @@ public class DataSourceProxy extends AbstractDataSourceProxy implements Resource
         } catch (SQLException e) {
             throw new IllegalStateException("can not init dataSource", e);
         }
+        // rm注册到tc，建立连接
         DefaultResourceManager.get().registerResource(this);
         tableMetaExcutor.scheduleAtFixedRate(new Runnable() {
             @Override

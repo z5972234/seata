@@ -71,6 +71,7 @@ public abstract class AbstractDMLBaseExecutor<T, S extends Statement> extends Ba
         TableRecords beforeImage = beforeImage();
         T result = statementCallback.execute(statementProxy.getTargetStatement(), args);
         TableRecords afterImage = afterImage(beforeImage);
+        // 写undo log
         prepareUndoLog(beforeImage, afterImage);
         return result;
     }

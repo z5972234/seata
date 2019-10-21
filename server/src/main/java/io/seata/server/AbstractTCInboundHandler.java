@@ -67,6 +67,9 @@ public abstract class AbstractTCInboundHandler extends AbstractExceptionHandler 
     protected abstract void doGlobalBegin(GlobalBeginRequest request, GlobalBeginResponse response,
         RpcContext rpcContext) throws TransactionException;
 
+    /**
+     * TC提交全局事务入口
+     */
     @Override
     public GlobalCommitResponse handle(GlobalCommitRequest request, final RpcContext rpcContext) {
         GlobalCommitResponse response = new GlobalCommitResponse();
@@ -91,6 +94,9 @@ public abstract class AbstractTCInboundHandler extends AbstractExceptionHandler 
     protected abstract void doGlobalCommit(GlobalCommitRequest request, GlobalCommitResponse response,
         RpcContext rpcContext) throws TransactionException;
 
+    /**
+     * TC回滚全局事务入口
+     */
     @Override
     public GlobalRollbackResponse handle(GlobalRollbackRequest request, final RpcContext rpcContext) {
         GlobalRollbackResponse response = new GlobalRollbackResponse();
@@ -98,6 +104,7 @@ public abstract class AbstractTCInboundHandler extends AbstractExceptionHandler 
             @Override
             public void execute(GlobalRollbackRequest request, GlobalRollbackResponse response)
                 throws TransactionException {
+                //TC回滚全局事务入口
                 doGlobalRollback(request, response, rpcContext);
             }
 

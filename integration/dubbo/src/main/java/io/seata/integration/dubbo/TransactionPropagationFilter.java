@@ -39,13 +39,16 @@ public class TransactionPropagationFilter implements Filter {
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
+        // 当前seata上下文的xid，
         String xid = RootContext.getXID();
+        // 当前dubbo RPC上下文中xid
         String rpcXid = RpcContext.getContext().getAttachment(RootContext.KEY_XID);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("xid in RootContext[" + xid + "] xid in RpcContext[" + rpcXid + "]");
         }
         boolean bind = false;
         if (xid != null) {
+            // 将xid保存到RPC上下文中
             RpcContext.getContext().setAttachment(RootContext.KEY_XID, xid);
         } else {
             if (rpcXid != null) {
@@ -57,9 +60,11 @@ public class TransactionPropagationFilter implements Filter {
             }
         }
         try {
+            // 执行自身逻辑
             return invoker.invoke(invocation);
 
         } finally {
+            // 移除seata上下文的xid
             if (bind) {
                 String unbindXid = RootContext.unbind();
                 if (LOGGER.isDebugEnabled()) {

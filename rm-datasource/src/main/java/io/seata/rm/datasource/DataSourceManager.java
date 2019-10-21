@@ -182,6 +182,7 @@ public class DataSourceManager extends AbstractResourceManager implements Initia
                 UndoLogManagerOracle.undo(dataSourceProxy, xid, branchId);
             }
             else if(JdbcConstants.MYSQL.equalsIgnoreCase(dataSourceProxy.getDbType())){
+                // 取出数据库undo_log进行数据补偿还原
                 UndoLogManager.undo(dataSourceProxy, xid, branchId);
             } else {
                 throw new NotSupportYetException("DbType[" + dataSourceProxy.getDbType() + "] is not support yet!");
