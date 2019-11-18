@@ -70,6 +70,7 @@ public class TCCResourceManager extends AbstractResourceManager {
 
     /**
      * TCC branch commit
+     * 二阶段的提交
      *
      * @param branchType
      * @param xid             Transaction id.

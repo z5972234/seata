@@ -65,6 +65,9 @@ public class TccActionInterceptor implements MethodInterceptor {
         this.remotingDesc = remotingDesc;
     }
 
+    /**
+     * rm源码入口
+     */
     @Override
     public Object invoke(final MethodInvocation invocation) throws Throwable {
         if(!RootContext.inGlobalTransaction()){
